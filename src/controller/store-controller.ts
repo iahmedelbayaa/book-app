@@ -49,7 +49,8 @@ export const saveStore = async (
     //await to execute database query
     await dbQuery(SaveStoreQuery, values);
 
-
+    console.log(storeName,address);
+    
     return res.status(201).send('Successfully store Created');
   } catch (error) {
     console.log('Error' + error);
