@@ -26,7 +26,7 @@ export const getDetailsList = async (
   next: NextFunction
 ) => {
   try {
-    var bookId = req.params.id;
+    var bookId = req.params.bookId;
     var getQuery = new queryList();
     var bookDetailsQuery = getQuery.GET_BOOK_DETAILS_QUERY;
     var result = (await dbQuery(bookDetailsQuery, [bookId])) as QueryResult;
@@ -93,6 +93,7 @@ export const updateBook = async (
     var createdBy = 'admin';
     var createdOn = Date.now();
     //req body
+    var bookId = req.body.bookId;
     var title = req.body.title;
     var description = req.body.description;
     var author = req.body.author;
@@ -100,10 +101,10 @@ export const updateBook = async (
     var pages = req.body.pages;
     var storeCode = req.body.bookName;
     //check if is empty
-    if (!title || !author || !publisher || !storeCode) {
+    if (!bookId || !title || !author || !publisher || !storeCode) {
       return res.status(501).send({
         error:
-          'title , author , publisher , storeCode are required , can not empty ',
+          'book Id ,title , author , publisher , storeCode are required , can not empty ',
       });
     }
 
@@ -119,15 +120,16 @@ export const updateBook = async (
       storeCode,
       createdOn,
       createdBy,
+      bookId
     ];
     var updateBookQuery = saveQuery.UPDATE_STORE_QUERY;
     //await to execute database query
     await dbQuery(updateBookQuery, values);
 
-    return res.status(201).send('Successfully book Created');
+    return res.status(201).send('Successfully book Update' + title);
   } catch (error) {
     console.log('Error' + error);
-    return res.status(500).send({ error: 'Failed to save book' });
+    return res.status(500).send({ error: 'Failed to update book' });
   }
 };
 
