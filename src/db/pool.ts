@@ -6,8 +6,8 @@ dotenv.config();
 const databaseConfig = {
   connectionString: process.env.DATABASE_URL,
   max: 20,
-  idelTimeoutMills: 200,
-  connectionTimeMills: 300,
+  idleTimeoutMillis: 200,
+  connectionTimeoutMillis: 300,
 };
 
 const pool = new Pool(databaseConfig);

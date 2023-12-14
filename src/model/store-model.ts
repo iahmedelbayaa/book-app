@@ -1,6 +1,6 @@
 export interface Store {
   storeId: Number;
   storeName: String;
-  code: String;
+  storeCode: String;
   address: String;
 }

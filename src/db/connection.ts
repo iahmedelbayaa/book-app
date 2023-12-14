@@ -1,6 +1,6 @@
 import pool from './pool';
 
-const query = (queryText: string, queryParams: any) => {
+export const dbQuery = (queryText: string, queryParams?: any) => {
     return new Promise((resolve, reject) => {
         pool.query(queryText, queryParams).then(res => {
             resolve(res);
@@ -11,5 +11,5 @@ const query = (queryText: string, queryParams: any) => {
     });
 };
 
-export default query;
+
 
