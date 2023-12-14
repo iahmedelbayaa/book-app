@@ -25,8 +25,8 @@ export const getDetailsList = async (
   res: Response,
   next: NextFunction
 ) => {
-    try {
-        var bookId = req.params.id;
+  try {
+    var bookId = req.params.id;
     var getQuery = new queryList();
     var bookDetailsQuery = getQuery.GET_BOOK_DETAILS_QUERY;
     var result = (await dbQuery(bookDetailsQuery, [bookId])) as QueryResult;
@@ -34,5 +34,124 @@ export const getDetailsList = async (
   } catch (error) {
     console.log('Error' + error);
     return res.status(500).send({ error: 'Failed to list book' });
+  }
+};
+
+export const saveBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    var createdBy = 'admin';
+    var createdOn = Date.now();
+    //req body
+    var title = req.body.title;
+    var description = req.body.description;
+    var author = req.body.author;
+    var publisher = req.body.publisher;
+    var pages = req.body.pages;
+    var storeCode = req.body.bookName;
+    //check if is empty
+    if (!title || !author || !publisher || !storeCode) {
+      return res.status(501).send({
+        error:
+          'title , author , publisher , storeCode are required , can not empty ',
+      });
+    }
+
+    //get new class
+    var saveQuery = new queryList();
+    // params
+    var values: any[] = [
+      title,
+      description,
+      author,
+      publisher,
+      pages,
+      storeCode,
+      createdOn,
+      createdBy,
+    ];
+    var SaveBookQuery = saveQuery.SAVE_STORE_QUERY;
+    //await to execute database query
+    await dbQuery(SaveBookQuery, values);
+
+    return res.status(201).send('Successfully book Created');
+  } catch (error) {
+    console.log('Error' + error);
+    return res.status(500).send({ error: 'Failed to save book' });
+  }
+};
+
+export const updateBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    var createdBy = 'admin';
+    var createdOn = Date.now();
+    //req body
+    var title = req.body.title;
+    var description = req.body.description;
+    var author = req.body.author;
+    var publisher = req.body.publisher;
+    var pages = req.body.pages;
+    var storeCode = req.body.bookName;
+    //check if is empty
+    if (!title || !author || !publisher || !storeCode) {
+      return res.status(501).send({
+        error:
+          'title , author , publisher , storeCode are required , can not empty ',
+      });
+    }
+
+    //get new class
+    var saveQuery = new queryList();
+    // params
+    var values: any[] = [
+      title,
+      description,
+      author,
+      publisher,
+      pages,
+      storeCode,
+      createdOn,
+      createdBy,
+    ];
+    var updateBookQuery = saveQuery.UPDATE_STORE_QUERY;
+    //await to execute database query
+    await dbQuery(updateBookQuery, values);
+
+    return res.status(201).send('Successfully book Created');
+  } catch (error) {
+    console.log('Error' + error);
+    return res.status(500).send({ error: 'Failed to save book' });
+  }
+};
+
+export const deleteBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  var bookId = req.params.bookId;
+
+  try {
+    // validate not empty
+    if (!bookId) {
+      return res.status(500).send({ error: 'can not delete empty bookId' });
+    }
+    var deleteQuery = new queryList();
+    var deleteBookQuery = deleteQuery.DELETE_BOOK_QUERY;
+    await dbQuery(deleteBookQuery, [bookId]);
+
+    return res.status(200).send('Successfully book deleted ');
+  } catch (err) {
+    console.log('Error : ' + err);
+    return res
+      .status(500)
+      .send({ error: 'Failed to delete book with id : ' + bookId });
   }
 };
