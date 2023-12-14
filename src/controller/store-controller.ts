@@ -1,11 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { queryList } from '../db/dbQuery';
 import { dbQuery } from '../db/connection';
-import { Store } from '../model/store-model';
-import dotenv from 'dotenv';
-
-dotenv.config();
-    console.log(process.env.DATABASE_URL);
+import { QueryResult } from '../util/QueryResult';
 
 export const getStoreList = async (
   req: Request,
@@ -15,8 +11,9 @@ export const getStoreList = async (
   try {
     var getQuery = new queryList();
     var storeListQuery = getQuery.GET_STORE_LIST_QUERY;
-    var result = await dbQuery(storeListQuery);
-    return res.status(200).send(JSON.stringify(result));
+    var result = (await dbQuery(storeListQuery)) as QueryResult;
+
+    return res.status(200).send(JSON.stringify(result.rows));
   } catch (error) {
     console.log('Error' + error);
     return res.status(500).send({ error: 'Failed to list Store' });
@@ -40,7 +37,6 @@ export const saveStore = async (
       return res.status(501).send({ error: 'empty' });
     }
 
-
     //get new class
     var saveQuery = new queryList();
     // params
@@ -49,8 +45,8 @@ export const saveStore = async (
     //await to execute database query
     await dbQuery(SaveStoreQuery, values);
 
-    console.log(storeName,address);
-    
+    console.log(storeName, address);
+
     return res.status(201).send('Successfully store Created');
   } catch (error) {
     console.log('Error' + error);
